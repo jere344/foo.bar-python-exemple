@@ -105,3 +105,32 @@ print(solution([23, 10], [6, 4], [3, 2], 23)) # 8
 print(solution([300, 275], [150, 150], [185, 100], 500)) # 9
 print(solution([1250, 1250], [1000, 1000], [500, 400], 10000)) # 196
 print(solution([10, 10], [4, 4], [3, 3], 5000)) # 739323
+
+
+
+
+
+# To test your solutions : 
+
+# import random
+
+# for i in range(20):
+#     dimension = (random.randrange(2, 1251), random.randrange(2, 1251))
+#     your_pos = (
+#         random.randrange(0, dimension[0]),
+#         random.randrange(0, dimension[1]),
+#     )
+#     trainer_pos = your_pos
+#     while trainer_pos == your_pos:
+#         trainer_pos = (
+#             random.randrange(0, dimension[0]),
+#             random.randrange(0, dimension[1]),
+#         )
+#     distance = random.randrange(1, 10000)
+
+#     if solution(dimension, your_pos, trainer_pos, distance) != solution_bis(
+#         dimension, your_pos, trainer_pos, distance
+#     ):
+#         print(f"{dimension}, {your_pos}, {trainer_pos}, {distance}")
+#     else:
+#         print("pass")
