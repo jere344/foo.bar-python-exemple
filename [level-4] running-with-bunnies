@@ -1,0 +1,99 @@
+def infinite_time(times, time_limit):
+    n = len(times)
+    matrix = [n * [float("inf")] for _ in range(n)]
+    for i in range(n):
+        matrix[i][i] = 0
+        for _ in range(n - 1):
+            for j in range(n):
+                for k in range(n):
+                    if matrix[i][k] > (matrix[i][j] + times[j][k]):
+                        matrix[i][k] = matrix[i][j] + times[j][k]
+
+        for j in range(n):
+            for k in range(n):
+                if (matrix[i][k] > (matrix[i][j] + times[j][k])) and (
+                    matrix[0][j] < time_limit
+                ):
+                    return True, matrix
+
+    return False, matrix
+
+
+def bfs_max_bunnies(times, time_limit, n, d):
+    vertex_set = set([i for i in range(n)])
+    voids = [[i] for i in range(n)]
+    max_bunnies = set()
+    to_explore = [(0, [0], time_limit, voids)]
+
+    while to_explore:
+        u, path, time_left, voids = to_explore.pop()
+
+        for v in vertex_set - set(voids[u]):
+            time_vn = d[v][n - 1]
+            time_uv = d[u][v]
+            time_vu = d[v][u]
+            next_cache_void = [e[:] for e in voids]
+
+            if (time_left - time_uv - time_vn) >= 0:
+                next_path = path + [v]
+                next_time_left = time_left - time_uv
+
+                to_explore.append((v, next_path, next_time_left, next_cache_void))
+                if v == n - 1:
+                    next_path_set = set(next_path)
+                    len_next_path = len(next_path_set)
+
+                    if len_next_path == n:
+                        return [x for x in range(len(times) - 2)]
+
+                    if (
+                        len(max_bunnies) == len_next_path
+                        and sum(max_bunnies) > sum(next_path_set)
+                    ) or (len(max_bunnies) < len_next_path):
+
+                        max_bunnies = next_path_set
+
+            if time_vu + time_uv == 0:
+                next_cache_void[v].append(u)
+                next_cache_void[u].append(v)
+
+    return [(x - 1) for x in (max_bunnies - set((0, n - 1)))]
+
+
+def solution(times, time_limit):
+    if len(times) <= 2:
+        return []
+    has_infinite_time, matrix = infinite_time(times, time_limit)
+    if has_infinite_time:
+        return [x for x in range(len(times) - 2)]
+    else:
+        return bfs_max_bunnies(times, time_limit, len(times), matrix)
+
+
+print(solution([[0, 1, 1], [1, 0, 1], [1, 1, 0]], 2) == [0])
+print(
+    solution(
+        [
+            [0, 2, 2, 2, -1],
+            [9, 0, 2, 2, -1],
+            [9, 3, 0, 2, -1],
+            [9, 3, 2, 0, -1],
+            [9, 3, 2, 2, 0],
+        ],
+        1,
+    )
+    == [1, 2]
+)
+print(
+    solution(
+        [
+            [0, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1],
+            [1, 1, 0, 1, 1],
+            [1, 1, 1, 0, 1],
+            [1, 1, 1, 1, 0],
+        ],
+        3,
+    )
+    == [0, 1]
+)
